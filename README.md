@@ -1,4 +1,5 @@
-# Docker gomobile
+# Docker android gomobile
+Docker image for Android and golang / gomobile development.
 Based on https://git.openprivacy.ca/openprivacy/android-go-mobile/src/branch/main/Dockerfile
 
 
