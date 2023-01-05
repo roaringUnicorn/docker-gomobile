@@ -41,7 +41,7 @@ RUN ln -sf $ANDROID_HOME/ndk/$NDK_VER $ANDROID_HOME/ndk-bundle
 RUN echo 'hosts: files dns' > /etc/nsswitch.conf
 
 ENV GOLANG_VERSION=1.19.4
-ENV GOLANG_SHA256=18ac263e39210bcf68d85f4370e97fb1734166995a1f63fb38b4f6e07d90d212
+ENV GOLANG_SHA256=eda74db4ac494800a3e66ee784e495bfbb9b8e535df924a8b01b1a8028b7f368
 
 RUN set -eux; \
 	apt-get update; \
