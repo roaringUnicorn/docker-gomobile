@@ -4,9 +4,9 @@ Based on https://git.openprivacy.ca/openprivacy/android-go-mobile/src/branch/mai
 
 
 ## This image includes:
- - Java 11
- - Android build tools 33.0.0
+ - Java 20
+ - Android build tools 33.0.2
  - Android SDK 33
- - Android NDK 25.1.8937393
- - Go 1.19.4
+ - Android NDK 25.2.9519653
+ - Go 1.19.12
  - gomobile cmd tools and source

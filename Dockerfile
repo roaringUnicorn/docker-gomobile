@@ -1,13 +1,26 @@
+# openjdk docker image version from https://hub.docker.com/_/openjdk : *stable* version (no 'ea' or 'rc'), using newest available debian base
+FROM openjdk:20-jdk-bullseye
+
+# Android conf
+## Command Line Tools url from https://developer.android.com/studio#command-line-tools-only
+ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip"
+ENV ANDROID_VERSION=33
+## Build Tools version from https://developer.android.com/tools/releases/build-tools#notes
+ENV ANDROID_BUILD_TOOLS_VERSION=33.0.2
+## NDK version from https://developer.android.com/ndk/downloads
+ENV NDK_VER="25.2.9519653"
+
+# GoLang conf
+## Go version & hash from https://go.dev/dl/ (Source package) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
+ENV GOLANG_VERSION=1.19.12
+ENV GOLANG_SHA256=ee5d50e0a7fd74ba1b137cb879609aaaef9880bf72b5d1742100e38ae72bb557
+## GoMobile version from https://github.com/golang/mobile (Latest commit, as there is no tag yet)
+ENV GOMOBILEHASH=7088062f872dd0678a87e8986c67992e9c8855a5
+
 # Android section of this Dockerfile from https://medium.com/@elye.project/intro-to-docker-building-android-app-cb7fb1b97602
-FROM openjdk:11
-
-ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-9123335_latest.zip" \
-    ANDROID_HOME="/usr/local/android-sdk" \
-    ANDROID_SDK=$ANDROID_HOME \
-    ANDROID_VERSION=33 \
-    ANDROID_BUILD_TOOLS_VERSION=33.0.0
-
 ## Download Android SDK
+ENV ANDROID_HOME="/usr/local/android-sdk"
+ENV ANDROID_SDK=$ANDROID_HOME
 RUN mkdir "$ANDROID_HOME" .android \
     && mkdir -p $ANDROID_HOME/cmdline-tools/latest/ \
     && cd "$ANDROID_HOME" \
@@ -28,7 +41,6 @@ RUN $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;${ANDROID_BUI
     "platform-tools"
 
 # Install NDK
-ENV NDK_VER="25.1.8937393"
 RUN $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "ndk;$NDK_VER"
 RUN ln -sf $ANDROID_HOME/ndk/$NDK_VER $ANDROID_HOME/ndk-bundle
 
@@ -39,9 +51,6 @@ RUN ln -sf $ANDROID_HOME/ndk/$NDK_VER $ANDROID_HOME/ndk-bundle
 ## - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
 ## - docker run --rm debian:stretch grep '^hosts:' /etc/nsswitch.conf
 RUN echo 'hosts: files dns' > /etc/nsswitch.conf
-
-ENV GOLANG_VERSION=1.19.4
-ENV GOLANG_SHA256=eda74db4ac494800a3e66ee784e495bfbb9b8e535df924a8b01b1a8028b7f368
 
 RUN set -eux; \
 	apt-get update; \
@@ -71,7 +80,7 @@ RUN set -eux; \
 		x86_64) export GO386='387' ;; \
 	esac; \
 	\
-	wget -O go.tgz "https://golang.org/dl/go$GOLANG_VERSION.src.tar.gz"; \
+	wget -O go.tgz "https://go.dev/dl/go$GOLANG_VERSION.src.tar.gz"; \
 	echo "$GOLANG_SHA256 *go.tgz" | sha256sum -c -; \
 	tar -C /usr/local -xzf go.tgz; \
 	rm go.tgz; \
@@ -92,9 +101,6 @@ RUN mkdir $GOMOBILEPATH
 ENV GOPATH=$GOMOBILEPATH
 ENV PATH=$GOMOBILEPATH/bin:$PATH
 RUN mkdir -p "$GOMOBILEPATH/src" "$GOMOBILEPATH/bin" "$GOMOBILEPATH/pkg" && chmod -R 777 "$GOMOBILEPATH"
-
-# 2022.11.09
-ENV GOMOBILEHASH=43a0384520996c8376bfb8637390f12b44773e65
 
 # install gomobile
 RUN cd $GOMOBILEPATH/src; \
