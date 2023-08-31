@@ -1,6 +1,8 @@
 # openjdk docker image version from https://hub.docker.com/_/openjdk : *stable* version (no 'ea' or 'rc'), using newest available debian base
 FROM openjdk:20-jdk-bullseye
 
+RUN apt-get update
+
 # Android conf
 ## Command Line Tools url from https://developer.android.com/studio#command-line-tools-only
 ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip"
@@ -53,7 +55,6 @@ RUN ln -sf $ANDROID_HOME/ndk/$NDK_VER $ANDROID_HOME/ndk-bundle
 RUN echo 'hosts: files dns' > /etc/nsswitch.conf
 
 RUN set -eux; \
-	apt-get update; \
 	apt-get install -y --no-install-recommends \
 		 bash \
 		build-essential \
@@ -61,7 +62,6 @@ RUN set -eux; \
 		libssl-dev \
 		golang \
 	; \
-	rm -rf /var/lib/apt/lists/*; \
 	export \
 ## set GOROOT_BOOTSTRAP such that we can actually build Go
 		GOROOT_BOOTSTRAP="$(go env GOROOT)" \
@@ -114,3 +114,9 @@ RUN go install golang.org/x/mobile/cmd/gomobile@$GOMOBILEHASH
 RUN go install golang.org/x/mobile/cmd/gobind@$GOMOBILEHASH
 
 RUN gomobile clean
+
+# install "zip" (useful for handling AARs and JARs manually)
+RUN apt-get install -y --no-install-recommends zip
+
+# cleanup
+RUN rm -rf /var/lib/apt/lists/*
