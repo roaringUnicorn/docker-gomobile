@@ -75,38 +75,38 @@ RUN set -eux; \
 	url=; \
 	case "$arch" in \
 		'amd64') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz"; \
 			sha256='73cac0215254d0c7d1241fa40837851f3b9a8a742d0b54714cbdfb3feaf8f0af'; \
 			;; \
 		'armel') \
 			export GOARCH='arm' GOARM='5' GOOS='linux'; \
 			;; \
 		'armhf') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-armv6l.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-armv6l.tar.gz"; \
 			sha256='6c62e89113750cc77c498194d13a03fadfda22bd2c7d44e8a826fd354db60252'; \
 			;; \
 		'arm64') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-arm64.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-arm64.tar.gz"; \
 			sha256='ce1983a7289856c3a918e1fd26d41e072cc39f928adfb11ba1896440849b95da'; \
 			;; \
 		'i386') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-386.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-386.tar.gz"; \
 			sha256='64d3e5d295806e137c9e39d1e1f10b00a30fcd5c2f230d72b3298f579bb3c89a'; \
 			;; \
 		'mips64el') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-mips64le.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-mips64le.tar.gz"; \
 			sha256='c7ce3a9dcf03322b79beda474c4a0154393d9029b48f7c2e260fb3365c8a6ad3'; \
 			;; \
 		'ppc64el') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-ppc64le.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-ppc64le.tar.gz"; \
 			sha256='2c63b36d2adcfb22013102a2ee730f058ec2f93b9f27479793c80b2e3641783f'; \
 			;; \
 		'riscv64') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-riscv64.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-riscv64.tar.gz"; \
 			sha256='9695edd2109544b364daddb32816f5c7980f1f48b8490c51fa2c167f5b2eca48'; \
 			;; \
 		's390x') \
-			url='https://dl.google.com/go/go$GOLANG_VERSION.linux-s390x.tar.gz'; \
+			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-s390x.tar.gz"; \
 			sha256='7a75ba4afc7a96058ca65903d994cd862381825d7dca12b2183f087c757c26c0'; \
 			;; \
 		*) echo >&2 "error: unsupported architecture '$arch' (likely packaging update needed)"; exit 1 ;; \
