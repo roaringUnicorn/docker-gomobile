@@ -17,10 +17,10 @@ ENV NDK_VER="25.2.9519653"
 
 # GoLang conf
 ## Go version & hash from https://go.dev/dl/ (Source package) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
-ENV GOLANG_VERSION=1.21.4
-ENV GOLANG_SHA256=47b26a83d2b65a3c1c1bcace273b69bee49a7a7b5168a7604ded3d26a37bd787
+ENV GOLANG_VERSION=1.21.5
+ENV GOLANG_SHA256=285cbbdf4b6e6e62ed58f370f3f6d8c30825d6e56c5853c66d3c23bcdb09db19
 ## GoMobile version from https://github.com/golang/mobile (Latest commit, as there is no tag yet)
-ENV GOMOBILEHASH=7088062f872dd0678a87e8986c67992e9c8855a5
+ENV GOMOBILEHASH=76ac6878050a2eef81867f2c6c21108e59919e8f
 
 # Android section of this Dockerfile from https://medium.com/@elye.project/intro-to-docker-building-android-app-cb7fb1b97602
 ## Download Android SDK
