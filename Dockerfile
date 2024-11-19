@@ -8,19 +8,22 @@ RUN apt-get install -y --no-install-recommends zip
 
 # Android conf
 ## Command Line Tools url from https://developer.android.com/studio#command-line-tools-only
-ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip"
-ENV ANDROID_VERSION=33
+ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip"
+## Android version from the latest API in Android Studio
+ENV ANDROID_VERSION=35
 ## Build Tools version from https://developer.android.com/tools/releases/build-tools#notes
-ENV ANDROID_BUILD_TOOLS_VERSION=33.0.2
+ENV ANDROID_BUILD_TOOLS_VERSION=34.0.0
 ## NDK version from https://developer.android.com/ndk/downloads
-ENV NDK_VER="25.2.9519653"
+ENV NDK_VER="27.2.12479018"
 
 # GoLang conf
-## Go version & hash from https://go.dev/dl/ (AMD64 package) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
-ENV GOLANG_VERSION=1.21.5
-ENV GOLANG_SHA256=e2bc0b3e4b64111ec117295c088bde5f00eeed1567999ff77bc859d7df70078e
+## Go version & hash from https://go.dev/dl/ (Hash from Archive Linux x86-64) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
+ENV GOLANG_VERSION=1.23.3
+ENV GOLANG_SHA256=a0afb9744c00648bafb1b90b4aba5bdb86f424f02f9275399ce0c20b93a2c3a8
 ## GoMobile version from https://github.com/golang/mobile (Latest commit, as there is no tag yet)
-ENV GOMOBILEHASH=76ac6878050a2eef81867f2c6c21108e59919e8f
+ENV GOMOBILEHASH=fa514ef75a0ffd7d89e1b4c9b45485f7bb39cf83
+
+## --- END OF VARIABLES TO CHANGE FOR UPDATE ---
 
 # Android section of this Dockerfile from https://medium.com/@elye.project/intro-to-docker-building-android-app-cb7fb1b97602
 ## Download Android SDK
@@ -69,7 +72,7 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV PATH /usr/local/go/bin:$PATH
+ENV PATH=/usr/local/go/bin:$PATH
 RUN set -eux; \
 	arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
 	url=; \
