@@ -20,7 +20,8 @@ ENV NDK_VER="27.2.12479018"
 # GoLang conf
 ## Go version & hash from https://go.dev/dl/ (Hash from Archive Linux x86-64) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
 ENV GOLANG_VERSION=1.23.5
-ENV GOLANG_SHA256=cbcad4a6482107c7c7926df1608106c189417163428200ce357695cc7e01d091
+ENV GOLANG_PREBUILT_SHA256=cbcad4a6482107c7c7926df1608106c189417163428200ce357695cc7e01d091
+ENV GOLANG_SOURCE_SHA256=a6f3f4bbd3e6bdd626f79b668f212fbb5649daf75084fb79b678a0ae4d97423b
 ## GoMobile version from https://github.com/golang/mobile (Latest commit, as there is no tag yet)
 ENV GOMOBILEHASH=c31d5b91ecc32c0d598b8fe8457d244ca0b4e815
 
@@ -56,6 +57,7 @@ RUN ln -sf $ANDROID_HOME/ndk/$NDK_VER $ANDROID_HOME/ndk-bundle
 
 # Go section of this Dockerfile from Docker golang: https://github.com/docker-library/golang/blob/master/1.21/bullseye/Dockerfile
 # Adapted from alpine apk to debian apt
+# Customized to bootstrap with the pre-buit binary, then build custom version from source which includes https://go-review.googlesource.com/c/go/+/408395
 
 ## set up nsswitch.conf for Go's "netgo" implementation
 ## - https://github.com/golang/go/blob/go1.9.1/src/net/conf.go#L194-L275
@@ -74,20 +76,25 @@ RUN set -eux; \
 	; \
 	rm -rf /var/lib/apt/lists/*
 
-ENV PATH=/usr/local/go/bin:$PATH
 RUN set -eux; \
 	arch="$(dpkg --print-architecture)"; arch="${arch##*-}"; \
 	url=; \
 	case "$arch" in \
 		'amd64') \
-			url="https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz"; \
+			url_prebuilt="https://dl.google.com/go/go$GOLANG_VERSION.linux-amd64.tar.gz"; \
+			url_src="https://dl.google.com/go/go$GOLANG_VERSION.src.tar.gz"; \
 			;; \
 		*) echo >&2 "error: unsupported architecture '$arch' (likely packaging update needed)"; exit 1 ;; \
 	esac; \
-	wget -O go.tgz.asc "$url.asc"; \
-	wget -O go.tgz "$url" --progress=dot:giga;
+	wget -O go_prebuilt.tgz.asc "$url_prebuilt.asc"; \
+	wget -O go_prebuilt.tgz "$url_prebuilt" --progress=dot:giga; \
+	wget -O go_src.tgz.asc "$url_src.asc"; \
+	wget -O go_src.tgz "$url_src" --progress=dot:giga;
 
-RUN	echo "$GOLANG_SHA256 *go.tgz" | sha256sum -c -;
+RUN	echo "$GOLANG_PREBUILT_SHA256 go_prebuilt.tgz" | sha256sum -c -;
+RUN	echo "$GOLANG_SOURCE_SHA256 go_src.tgz" | sha256sum -c -;
+
+ADD custom-seald-build.diff /root/
 
 RUN set -eux; \
 # https://github.com/golang/go/issues/14739#issuecomment-324767697
@@ -96,17 +103,30 @@ RUN set -eux; \
 	gpg --batch --keyserver keyserver.ubuntu.com --recv-keys 'EB4C 1BFD 4F04 2F6D DDCC  EC91 7721 F63B D38B 4796'; \
 # let's also fetch the specific subkey of that key explicitly that we expect "go.tgz.asc" to be signed by, just to make sure we definitely have it
 	gpg --batch --keyserver keyserver.ubuntu.com --recv-keys '2F52 8D36 D67B 69ED F998  D857 78BD 6547 3CB3 BD13'; \
-	gpg --batch --verify go.tgz.asc go.tgz; \
+	gpg --batch --verify go_prebuilt.tgz.asc go_prebuilt.tgz; \
+	gpg --batch --verify go_src.tgz.asc go_src.tgz; \
 	gpgconf --kill all; \
-	rm -rf "$GNUPGHOME" go.tgz.asc; \
+	rm -rf "$GNUPGHOME" go_prebuilt.tgz.asc go_src.tgz.asc; \
 	\
-	tar -C /usr/local -xzf go.tgz; \
-	rm go.tgz; \
+	tar -C /usr/local -xzf go_prebuilt.tgz; \
+	rm go_prebuilt.tgz; \
 	\
-	go version
+	mv /usr/local/go /usr/local/go_prebuilt; \
+	export PATH=/usr/local/go_prebuilt/bin:$PATH; \
+	go version; \
+    \
+	tar -C /usr/local -xzf go_src.tgz; \
+	rm go_src.tgz; \
+    cd /usr/local/go; \
+    git apply --reject /root/custom-seald-build.diff; \
+    cd src; \
+    ./all.bash; \
+    rm -r /usr/local/go_prebuilt /root/custom-seald-build.diff
 
 # persist new go in PATH
 ENV PATH=/usr/local/go/bin:$PATH
+
+RUN go version | grep "custom-seald-build"
 
 ENV GOMOBILEPATH=/gomobile
 # Setup /workspace
