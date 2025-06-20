@@ -11,19 +11,19 @@ RUN apt-get install -y --no-install-recommends zip
 ENV SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip"
 ENV SDK_SHA256=2d2d50857e4eb553af5a6dc3ad507a17adf43d115264b1afc116f95c92e5e258
 ## Android version from the latest API in Android Studio
-ENV ANDROID_VERSION=35
+ENV ANDROID_VERSION=36
 ## Build Tools version from https://developer.android.com/tools/releases/build-tools#notes
-ENV ANDROID_BUILD_TOOLS_VERSION=34.0.0
+ENV ANDROID_BUILD_TOOLS_VERSION=35.0.1
 ## NDK version from https://developer.android.com/ndk/downloads
-ENV NDK_VER="27.2.12479018"
+ENV NDK_VER="29.0.13599879"
 
 # GoLang conf
-## Go version & hash from https://go.dev/dl/ (Hash from Archive Linux x86-64) : debian bullseye provides go1.15.15, which can only build go source up to go 1.19
-ENV GOLANG_VERSION=1.23.5
-ENV GOLANG_PREBUILT_SHA256=cbcad4a6482107c7c7926df1608106c189417163428200ce357695cc7e01d091
-ENV GOLANG_SOURCE_SHA256=a6f3f4bbd3e6bdd626f79b668f212fbb5649daf75084fb79b678a0ae4d97423b
+## Go version & hash from https://go.dev/dl/ (Hash from Archive Linux x86-64)
+ENV GOLANG_VERSION=1.24.4
+ENV GOLANG_PREBUILT_SHA256=77e5da33bb72aeaef1ba4418b6fe511bc4d041873cbf82e5aa6318740df98717
+ENV GOLANG_SOURCE_SHA256=5a86a83a31f9fa81490b8c5420ac384fd3d95a3e71fba665c7b3f95d1dfef2b4
 ## GoMobile version from https://github.com/golang/mobile (Latest commit, as there is no tag yet)
-ENV GOMOBILEHASH=c31d5b91ecc32c0d598b8fe8457d244ca0b4e815
+ENV GOMOBILEHASH=a2a15c67f36f571f501e0a86d5a7f5f26e3fd201
 
 ## --- END OF VARIABLES TO CHANGE FOR UPDATE ---
 
